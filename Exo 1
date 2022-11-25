@@ -1,0 +1,39 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+tmax = 100*365*24*3600
+dt = 1*365*21*3600
+M = int(tmax/dt)
+t = np.linspace(0, tmax, M)
+T = np.zeros(M+1)
+x = np.zeros(M+1)
+ap = np.zeros(M+1)
+T[0] = 300
+S0 = 1360
+A = -365.58
+B = 2.09
+C = 8.36*10**8
+a1 = 0.62
+a2 = 0.30
+T1 = 258
+T2 = 288
+S2 = -0.477
+dT = T[1]-T[0]
+
+for i in range(M):
+    if T[i] < T1:
+        x[i] = 0
+    if T[i] > T2:
+        x[i] = 1
+    else:
+        x[i] = (T[i] - T1) / (T2 - T1)
+
+    ap[i] = a1 - (a1 - a2) * (x[i] + (S2 / 2) * ((x[i] ** 3) - x[i]))
+    T[i+1] = T[i] + (dt/C)*((S0/4)*(1-ap[i])-A-B*T[i])
+
+# plt.plot(T)
+# plt.show()
+
+V=-np.cumsum((S0/4*(1-ap)-(A+B*T))*dT/C)
+plt.plot(T, V)
+plt.show()
